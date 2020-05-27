@@ -6,6 +6,7 @@ namespace CefInteropControl
     using System.Drawing;
     using System.Runtime.InteropServices;
     using System.Security.Permissions;
+    using System.Threading.Tasks;
     using System.Windows.Forms;
 
     #region Interfaces
@@ -87,6 +88,9 @@ namespace CefInteropControl
 
         [DispId(8)]
         void DisposeBrowser();
+
+        [DispId(9)]
+        string ExecuteScript(string script);
     }
     #endregion
 
@@ -335,6 +339,12 @@ namespace CefInteropControl
                 }
 
                 chromeBrowser.Load(url);
+            }
+
+            public string ExecuteScript(string script)
+            {
+                string resultado = chromeBrowser.EvaluateScriptAsync(script).GetAwaiter().GetResult().Result.ToString();
+                return resultado;
             }
 
             public void DisposeBrowser()
