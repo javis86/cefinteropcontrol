@@ -30,11 +30,12 @@ namespace CefInteropControl
         {
             this.SuspendLayout();
             // 
-            // InteropUserControl
+            // CefUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "InteropUserControl";
+            this.Name = "CefUserControl";
+            this.Load += new System.EventHandler(this.CefUserControl_Load);
             this.ResumeLayout(false);
 
         }

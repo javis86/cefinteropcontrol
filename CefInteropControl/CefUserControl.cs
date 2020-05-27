@@ -1,5 +1,7 @@
 namespace CefInteropControl
 {
+    using CefSharp;
+    using CefSharp.WinForms;
     using System.ComponentModel;
     using System.Drawing;
     using System.Runtime.InteropServices;
@@ -80,6 +82,11 @@ namespace CefInteropControl
         void Refresh();
 
         // add additional properties and methods visible in VB6
+        [DispId(7)]
+        void Navigate(string url);
+
+        [DispId(8)]
+        void DisposeBrowser();
     }
     #endregion
 
@@ -289,12 +296,59 @@ namespace CefInteropControl
 
             }
 
-        #endregion
+        #endregion           
 
 #endif
 
         #endregion
 
         // Please enter any new code here, below the Interop code
+            private ChromiumWebBrowser chromeBrowser;
+
+            private void CefUserControl_Load(object sender, System.EventArgs e)
+            {
+                InitializeChromium();
+            }
+
+            public void InitializeChromium()
+            {
+                try
+                {
+                    CefSettings settings = new CefSettings();
+                    // Initialize cef with the provided settings
+                    Cef.Initialize(settings);
+                }
+                catch (System.Exception)
+                {
+                }                
+            }
+
+            public void Navigate(string url)
+            {
+                if (chromeBrowser == null)
+                {
+                    chromeBrowser = new ChromiumWebBrowser();
+                    chromeBrowser.RequestContext = new RequestContext();
+
+                    this.Controls.Add(chromeBrowser);
+                    chromeBrowser.Dock = DockStyle.Fill;
+                }
+
+                chromeBrowser.Load(url);
+            }
+
+            public void DisposeBrowser()
+            {
+                try
+                {
+                    chromeBrowser.Dispose();
+                }
+                catch (System.Exception)
+                {
+                    
+                }
+            }
+            
+
     }
 }
