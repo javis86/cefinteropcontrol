@@ -32,15 +32,18 @@ namespace CefInteropControl
             // 
             // CefUserControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "CefUserControl";
+            this.Size = new System.Drawing.Size(200, 185);
             this.Load += new System.EventHandler(this.CefUserControl_Load);
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
     }
 }
 

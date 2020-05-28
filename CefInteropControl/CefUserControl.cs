@@ -331,14 +331,16 @@ namespace CefInteropControl
             {
                 if (chromeBrowser == null)
                 {
-                    chromeBrowser = new ChromiumWebBrowser();
-                    chromeBrowser.RequestContext = new RequestContext();
+                    chromeBrowser = new ChromiumWebBrowser(url, new RequestContext());
 
                     this.Controls.Add(chromeBrowser);
                     chromeBrowser.Dock = DockStyle.Fill;
                 }
+                else
+                { 
+                    chromeBrowser.Load(url);                
+                }
 
-                chromeBrowser.Load(url);
             }
 
             public string ExecuteScript(string script)
