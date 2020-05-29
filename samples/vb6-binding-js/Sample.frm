@@ -20,6 +20,8 @@ Begin VB.Form Form1
       Enabled         =   "True"
       ForegroundColor =   "-2147483630"
       BackgroundColor =   "-2147483633"
+      BackColor       =   "Control"
+      ForeColor       =   "ControlText"
       Location        =   "30, 20"
       Margin          =   "4, 4, 4, 4"
       Name            =   "CefUserControl"
@@ -49,19 +51,15 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 
-Private Sub CefUserControl1_Click()
-
-End Sub
-
 Private Sub CefUserControl1_FrameLoadEndEvent()
     MsgBox ("Main frame loaded")
-    Me.CefUserControl1.ExecuteScript ("document.body.onmouseup = function(){" & _
-        "// se llama al evento de CefSharp que bindea con el metodo javascriptreceived" & _
+    Me.CefUserControl1.ExecuteScript ("document.body.onmouseup = function(){" & vbCrLf & _
+        "// se llama al evento de CefSharp que bindea con el metodo javascriptreceived " & vbCrLf & _
         "CefSharp.PostMessage(window.getSelection().toString());}")
 End Sub
 
 Private Sub CefUserControl1_JavascriptMessageReceivedEvent(ByVal message As String)
-    MsgBox ("Message Received: " & message)
+    Me.Label1.Caption = message
 End Sub
 
 Private Sub Form_Load()
