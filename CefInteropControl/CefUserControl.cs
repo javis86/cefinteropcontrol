@@ -41,6 +41,8 @@ namespace CefInteropControl
         void FrameLoadEndEvent();
         [DispId(4)]
         void JavascriptMessageReceivedEvent(string message);
+        [DispId(5)]
+        void LoadingStateChangedEvent();
     }
 
     /// <summary>
@@ -142,11 +144,17 @@ namespace CefInteropControl
         // 2) Raise the event in the appropriate UserControl event.
         public delegate void ClickEventHandler();
         public delegate void DblClickEventHandler();
-        public delegate void FrameLoadEndEventHandler();
-        public delegate void JavascriptMessageReceivedEventHandler(string message);
         public new event ClickEventHandler Click; // Event must be marked as new since .NET UserControls have the same name.
         public event DblClickEventHandler DblClick;
+
+
+        // Specific CefSharp Event Handlers
+        public delegate void FrameLoadEndEventHandler();
+        public delegate void LoadingStateChangedEventHandler();
+        public delegate void JavascriptMessageReceivedEventHandler(string message);
+        
         public event FrameLoadEndEventHandler FrameLoadEndEvent;
+        public event LoadingStateChangedEventHandler LoadingStateChangedEvent;
         public event JavascriptMessageReceivedEventHandler JavascriptMessageReceivedEvent;
 
         private void InteropUserControl_Click(object sender, System.EventArgs e)
@@ -363,6 +371,16 @@ namespace CefInteropControl
                     if (args.Frame.IsMain)
                     {                       
                        FrameLoadEndEvent();
+                    }
+                };
+
+                //Wait for the page to finish loading (all resources will have been loaded, rendering is likely still happening)
+                chromeBrowser.LoadingStateChanged += (sender, args) =>
+                {
+                    //Wait for the Page to finish loading
+                    if (args.IsLoading == false)
+                    {
+                        LoadingStateChangedEvent();
                     }
                 };
 

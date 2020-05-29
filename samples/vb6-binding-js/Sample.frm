@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{34E74120-6D1A-4E42-A3DB-DD24B676A5DF}#1.0#0"; "CefInteropControl.tlb"
+Object = "{34E74120-6D1A-4E42-A3DB-DD24B676A5DF}#1.0#0"; "mscoree.dll"
 Begin VB.Form Form1 
    Caption         =   "vb6 binding js"
    ClientHeight    =   5136
@@ -53,13 +53,17 @@ Attribute VB_Exposed = False
 
 Private Sub CefUserControl1_FrameLoadEndEvent()
     MsgBox ("Main frame loaded")
-    Me.CefUserControl1.ExecuteScript ("document.body.onmouseup = function(){" & vbCrLf & _
-        "// se llama al evento de CefSharp que bindea con el metodo javascriptreceived " & vbCrLf & _
-        "CefSharp.PostMessage(window.getSelection().toString());}")
 End Sub
 
 Private Sub CefUserControl1_JavascriptMessageReceivedEvent(ByVal message As String)
     Me.Label1.Caption = message
+End Sub
+
+Rem Por Sugerencia de CefSharp este evento es mas seguro de que se haya cargado el frame
+Private Sub CefUserControl1_LoadingStateChangedEvent()
+    Me.CefUserControl1.ExecuteScript ("document.body.onmouseup = function(){" & vbCrLf & _
+        "// se llama al evento de CefSharp que bindea con el metodo javascriptreceived " & vbCrLf & _
+        "CefSharp.PostMessage(window.getSelection().toString());}")
 End Sub
 
 Private Sub Form_Load()
