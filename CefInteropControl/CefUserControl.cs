@@ -36,6 +36,11 @@ namespace CefInteropControl
         void DblClick();
 
         // add additional events visible in VB6
+
+        [DispId(3)]
+        void FrameLoadEndEvent();
+        [DispId(4)]
+        void JavascriptMessageReceivedEvent(string message);
     }
 
     /// <summary>
@@ -90,7 +95,7 @@ namespace CefInteropControl
         void DisposeBrowser();
 
         [DispId(9)]
-        string ExecuteScript(string script);
+        void ExecuteScript(string script);
     }
     #endregion
 
@@ -137,8 +142,12 @@ namespace CefInteropControl
         // 2) Raise the event in the appropriate UserControl event.
         public delegate void ClickEventHandler();
         public delegate void DblClickEventHandler();
+        public delegate void FrameLoadEndEventHandler();
+        public delegate void JavascriptMessageReceivedEventHandler(string message);
         public new event ClickEventHandler Click; // Event must be marked as new since .NET UserControls have the same name.
         public event DblClickEventHandler DblClick;
+        public event FrameLoadEndEventHandler FrameLoadEndEvent;
+        public event JavascriptMessageReceivedEventHandler JavascriptMessageReceivedEvent;
 
         private void InteropUserControl_Click(object sender, System.EventArgs e)
         {
@@ -316,10 +325,10 @@ namespace CefInteropControl
 
             public void InitializeChromium()
             {
+                // Try-Catch prevent two time or more calls in a not nice way
                 try
                 {
-                    CefSettings settings = new CefSettings();
-                    // Initialize cef with the provided settings
+                    CefSettings settings = new CefSettings();                    
                     Cef.Initialize(settings);
                 }
                 catch (System.Exception)
@@ -333,6 +342,8 @@ namespace CefInteropControl
                 {
                     chromeBrowser = new ChromiumWebBrowser(url, new RequestContext());
 
+                    AddHandlers();
+
                     this.Controls.Add(chromeBrowser);
                     chromeBrowser.Dock = DockStyle.Fill;
                 }
@@ -343,10 +354,29 @@ namespace CefInteropControl
 
             }
 
-            public string ExecuteScript(string script)
+            private void AddHandlers()
             {
-                string resultado = chromeBrowser.EvaluateScriptAsync(script).GetAwaiter().GetResult().Result.ToString();
-                return resultado;
+                //Wait for the MainFrame to finish loading
+                chromeBrowser.FrameLoadEnd += (sender2, args) =>
+                {
+                    //Wait for the MainFrame to finish loading
+                    if (args.Frame.IsMain)
+                    {                       
+                       FrameLoadEndEvent();
+                    }
+                };
+
+                chromeBrowser.JavascriptMessageReceived += (sender2, args) =>
+                {
+                    var message = (string)args.Message;
+                    JavascriptMessageReceivedEvent(message);
+                };
+            }
+            public void ExecuteScript(string script)
+            {
+                // Javascript must have CefSharp.PostMessage(string message); to fire JavascriptMessageReceivedCallback
+                // You can bind any Javascript event to fire the callback is needed
+                chromeBrowser.EvaluateScriptAsync(script);
             }
 
             public void DisposeBrowser()

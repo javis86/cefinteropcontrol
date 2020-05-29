@@ -38,3 +38,26 @@ Documentation: [froque/interoptoolkitcs](https://github.com/froque/interoptoolki
 ### CefSharp
 
 Using CefSharp has some important notes, considerations and limitations: [Cefsharp Wiki](https://github.com/cefsharp/CefSharp/wiki)
+
+#### Debugging hybrid applications
+
+From [interoptoolkitcs wiki](https://github.com/froque/interoptoolkitcs/wiki/How-To:-Debug-a-Hybrid-Application):
+
+
+
+> # Debugging Visual Basic 6.0 Code
+>
+> Debugging Visual Basic 6.0 code in a Hybrid application is no different than debugging any other Visual Basic 6.0 project. Press F5 to run, set breakpoints, and debug as you normally would. There are two different methods for stepping into your .NET — by attaching to a process from Visual Studio .NET, or by setting a Start Action in Visual Studio.
+>
+> # Debugging with Attach to Process
+>
+> You will not be able to step into .NET code, however, without performing a few additional steps. Follow these steps to debug your .NET code:
+>
+> 1. Load your .NET project in Visual Studio.
+> 2. Build the .NET project if it has not already been built.
+> 3. Load your Visual Basic 6.0 code in the Visual Basic 6.0 IDE.
+> 4. Run your application by pressing F5 in the Visual Basic 6.0 IDE (Note: You must do this once before attaching the .NET debugger to properly load the .NET code).
+> 5. In Visual Studio, select Attach to Process... from the Debug menu.
+> 6. In the dialog that appears, select the VB6.exe process (Note: because the Visual Basic 6.0 code runs within the Visual Basic 6.0 IDE, you must select this process to debug).
+>
+> You only need to repeat the steps above after rebuilding .NET code. The Visual Basic 6.0 IDE must be closed when rebuilding. After completing these steps, press F5 in the Visual Basic 6.0 IDE to run, set breakpoints, and debug as you normally would. Remember that since the Visual Basic 6.0 IDE process is being debugged, you will not be able to navigate in the Visual Basic 6.0 code while stopped on a breakpoint.
