@@ -39,11 +39,9 @@ Documentation: [froque/interoptoolkitcs](https://github.com/froque/interoptoolki
 
 Using CefSharp has some important notes, considerations and limitations: [Cefsharp Wiki](https://github.com/cefsharp/CefSharp/wiki)
 
-#### Debugging hybrid applications
+### Debugging hybrid applications
 
 From [interoptoolkitcs wiki](https://github.com/froque/interoptoolkitcs/wiki/How-To:-Debug-a-Hybrid-Application):
-
-
 
 > # Debugging Visual Basic 6.0 Code
 >
@@ -61,3 +59,38 @@ From [interoptoolkitcs wiki](https://github.com/froque/interoptoolkitcs/wiki/How
 > 6. In the dialog that appears, select the VB6.exe process (Note: because the Visual Basic 6.0 code runs within the Visual Basic 6.0 IDE, you must select this process to debug).
 >
 > You only need to repeat the steps above after rebuilding .NET code. The Visual Basic 6.0 IDE must be closed when rebuilding. After completing these steps, press F5 in the Visual Basic 6.0 IDE to run, set breakpoints, and debug as you normally would. Remember that since the Visual Basic 6.0 IDE process is being debugged, you will not be able to navigate in the Visual Basic 6.0 code while stopped on a breakpoint.
+
+
+
+### Some Links and articles
+
+- [Interop Forms Toolkit 2.0 Tutorial](https://www.codeproject.com/Articles/18954/Interop-Forms-Toolkit-2-0-Tutorial?fid=422404&df=90&mpp=25&sort=Position&view=Normal&spc=Relaxed&prof=True)
+
+- [Interop Forms Toolkit Wiki](http://froque.github.io/VSIXInteropFormsToolkit/)
+
+- [Deploying Interop User Controls](http://froque.github.io/VSIXInteropFormsToolkit/Getting Started/Deploying Interop User Controls.html)
+
+- [How To Deploy A Hybrid Application](http://froque.github.io/VSIXInteropFormsToolkit/How To/How To Deploy A Hybrid Application.html):
+
+  > Visual Basic 6.0 applications that contain InteropForms or Interop UserControls can be deployed using a Visual Studio .NET Setup and Deployment project, automatically registering the interop assemblies and installing any prerequisites. Alternatively, you can modify an existing Setup script to deploy and register the assemblies, or you can bootstrap an existing setup.exe by creating a custom bootstrapper package.
+  >
+  > **To deploy with a Setup and Deployment project in Visual Studio .NET**
+  >
+  > 1. On the **File** menu, click **New Project**.
+  > 2. In the **New Project** dialog box, click **Other Project Types**, **Setup and Deployment**, **Setup Project**.
+  > 3. Enter a name for the Setup project and click **OK**.
+  > 4. In the **File System Editor**, select the **Application Folder**.
+  > 5. On the **Action** menu, click **Add**, **File**.
+  > 6. In the **Add File** dialog box, browse to the location of your Visual Basic 6.0 .exe and select it, and then click **Open**. Note that only the .exe is added - if your application has dependencies, you must repeat the process for each dependency.
+  > 7. On the **Action** menu, click **Add**, **File**.
+  > 8. In the **Add File** dialog box, browse to the location of your Interop UserControl or InteropForm and select it, and then click **Open**. Note that when it is added, any dependencies are also added.
+  > 9. For each .dll in **Solution Explorer**, select the file and in the **Properties** window, select the **Register** property and set it to **vsdraCOM**.
+  > 10. Right-click the files Microsoft.InteropFormTools.dll and Microsoft.InteropFormTools.tlb and click **Exclude**. (These will be installed using the redistributable package in step 13).
+  > 11. On the **Project** menu, click **Properties**.
+  > 12. In the **Property Pages**, click **Prerequisites**.
+  > 13. In the **Prerequisites** dialog box, check the **Microsoft InteropForms Toolkit 2.0** checkbox, and then click **OK**.
+  > 14. In the **Property Pages**, click **OK**.
+  > 15. On the **Build** menu, choose **Build** to build a Setup.exe and a .msi file for your application.
+  >
+  >  
+
