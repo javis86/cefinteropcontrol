@@ -1,5 +1,7 @@
 namespace CefInteropControl
 {
+    using CefInteropControl.Handlers;
+    using CefInteropControl.Helpers;
     using CefSharp;
     using CefSharp.WinForms;
     using System.ComponentModel;
@@ -43,6 +45,8 @@ namespace CefInteropControl
         void JavascriptMessageReceivedEvent(string message);
         [DispId(5)]
         void LoadingStateChangedEvent();
+        [DispId(6)]
+        void BrowserInitializedEvent();
     }
 
     /// <summary>
@@ -82,21 +86,24 @@ namespace CefInteropControl
         [DispId(5)]
         Image BackgroundImage { get; set; }
 
+        [DispId(6)]
+        int InitialZoomPercentage { get; set; }
+
         /// <summary>
         /// Forces the control to invalidate its client area and immediately redraw 
         /// itself and any child controls.
         /// </summary>
-        [DispId(6)]
+        [DispId(7)]
         void Refresh();
 
         // add additional properties and methods visible in VB6
-        [DispId(7)]
+        [DispId(8)]
         void Navigate(string url);
 
-        [DispId(8)]
+        [DispId(9)]
         void DisposeBrowser();
 
-        [DispId(9)]
+        [DispId(10)]
         void ExecuteScript(string script);
     }
     #endregion
@@ -152,10 +159,12 @@ namespace CefInteropControl
         public delegate void FrameLoadEndEventHandler();
         public delegate void LoadingStateChangedEventHandler();
         public delegate void JavascriptMessageReceivedEventHandler(string message);
-        
+        public delegate void BrowserInitializedEventHandler();
+
         public event FrameLoadEndEventHandler FrameLoadEndEvent;
         public event LoadingStateChangedEventHandler LoadingStateChangedEvent;
         public event JavascriptMessageReceivedEventHandler JavascriptMessageReceivedEvent;
+        public event BrowserInitializedEventHandler BrowserInitializedEvent;
 
         private void InteropUserControl_Click(object sender, System.EventArgs e)
         {
@@ -227,12 +236,15 @@ namespace CefInteropControl
             }
         }
 
+        private int _initialZoomPercentage = 100;
+        public int InitialZoomPercentage { get => this._initialZoomPercentage; set => this._initialZoomPercentage = value; }
+
         #endregion
 
         #region "VB6 Methods"
 
-            // Ensures that tabbing across VB6 and .NET controls works as expected
-            private void InteropUserControl_LostFocus(object sender, System.EventArgs e)
+        // Ensures that tabbing across VB6 and .NET controls works as expected
+        private void InteropUserControl_LostFocus(object sender, System.EventArgs e)
             {
                 ActiveXControlHelpers.HandleFocus(this);
             }
@@ -348,7 +360,7 @@ namespace CefInteropControl
             {
                 if (chromeBrowser == null)
                 {
-                    chromeBrowser = new ChromiumWebBrowser(url, new RequestContext());
+                    chromeBrowser = new ChromiumWebBrowser(url, new RequestContext());                    
 
                     AddHandlers();
 
@@ -380,6 +392,7 @@ namespace CefInteropControl
                     //Wait for the Page to finish loading
                     if (args.IsLoading == false)
                     {
+                        this.chromeBrowser.SetZoomLevel(ZoomCalculator.PercentageToZoomLevel(this._initialZoomPercentage));
                         LoadingStateChangedEvent();
                     }
                 };
@@ -389,8 +402,20 @@ namespace CefInteropControl
                     var message = (string)args.Message;
                     JavascriptMessageReceivedEvent(message);
                 };
+
+                chromeBrowser.IsBrowserInitializedChanged += (sender, e) =>
+                {
+                    if(chromeBrowser.IsBrowserInitialized)
+                        BrowserInitializedEvent();
+                };
+
+
+
+                chromeBrowser.DownloadHandler = new DownloadHandler();
             }
-            public void ExecuteScript(string script)
+       
+
+        public void ExecuteScript(string script)
             {
                 // Javascript must have CefSharp.PostMessage(string message); to fire JavascriptMessageReceivedCallback
                 // You can bind any Javascript event to fire the callback is needed

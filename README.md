@@ -62,6 +62,15 @@ From [interoptoolkitcs wiki](https://github.com/froque/interoptoolkitcs/wiki/How
 
 
 
+### From Zero to Hero: Effective Deployment
+
+Te requirements for a Windows 7 Clean Installation are:
+
+1. Microsoft Interop Toolkit 2.0
+2. Microsoft .net framework 4.5.2 runtime (NDP452-KB2901954-Web)
+4. Microsoft Visual C++ Redistributable Package (see [CefSharp Requirements](https://github.com/cefsharp/CefSharp/wiki/General-Usage#software-requirements))
+6. Project x86 or x64 binaries and run register.bat as administrator.
+
 ### Some Links and articles
 
 - [Interop Forms Toolkit 2.0 Tutorial](https://www.codeproject.com/Articles/18954/Interop-Forms-Toolkit-2-0-Tutorial?fid=422404&df=90&mpp=25&sort=Position&view=Normal&spc=Relaxed&prof=True)
