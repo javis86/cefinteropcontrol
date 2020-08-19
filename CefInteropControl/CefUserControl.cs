@@ -4,8 +4,11 @@ namespace CefInteropControl
     using CefInteropControl.Helpers;
     using CefSharp;
     using CefSharp.WinForms;
+    using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing;
+    using System.Linq;
     using System.Runtime.InteropServices;
     using System.Security.Permissions;
     using System.Threading.Tasks;
@@ -47,6 +50,10 @@ namespace CefInteropControl
         void LoadingStateChangedEvent();
         [DispId(6)]
         void BrowserInitializedEvent();
+        [DispId(7)]
+        void AddressChangedEvent(string address);
+        [DispId(8)]
+        void AddressChangedWithSpecificKeywordEvent(string address);
     }
 
     /// <summary>
@@ -105,6 +112,9 @@ namespace CefInteropControl
 
         [DispId(10)]
         void ExecuteScript(string script);
+
+        [DispId(11)]
+        void AddSpecificKeywordForAddressChangedEvent(string keyword);
     }
     #endregion
 
@@ -160,11 +170,16 @@ namespace CefInteropControl
         public delegate void LoadingStateChangedEventHandler();
         public delegate void JavascriptMessageReceivedEventHandler(string message);
         public delegate void BrowserInitializedEventHandler();
+        public delegate void AddressChangedEventHandler(string address);
+        public delegate void AddressChangedWithSpecificKeywordHandler(string address);
+        
 
         public event FrameLoadEndEventHandler FrameLoadEndEvent;
         public event LoadingStateChangedEventHandler LoadingStateChangedEvent;
         public event JavascriptMessageReceivedEventHandler JavascriptMessageReceivedEvent;
         public event BrowserInitializedEventHandler BrowserInitializedEvent;
+        public event AddressChangedEventHandler AddressChangedEvent;
+        public event AddressChangedWithSpecificKeywordHandler AddressChangedWithSpecificKeywordEvent;
 
         private void InteropUserControl_Click(object sender, System.EventArgs e)
         {
@@ -336,83 +351,93 @@ namespace CefInteropControl
         #endregion
 
         // Please enter any new code here, below the Interop code
-            private ChromiumWebBrowser chromeBrowser;
+        private ChromiumWebBrowser chromeBrowser;
+        private List<string> addressChangedSpecificKeywords;
+        
 
-            private void CefUserControl_Load(object sender, System.EventArgs e)
+        private void CefUserControl_Load(object sender, System.EventArgs e)
+        {
+            InitializeChromium();
+            addressChangedSpecificKeywords = new List<string>();
+        }
+
+        public void InitializeChromium()
+        {
+            // Try-Catch prevent two time or more calls in a not nice way
+            try
             {
-                InitializeChromium();
+                CefSettings settings = new CefSettings();                    
+                Cef.Initialize(settings);
+            }
+            catch (System.Exception)
+            {
+            }                
+        }
+
+        public void Navigate(string url)
+        {
+            if (chromeBrowser == null)
+            {
+                chromeBrowser = new ChromiumWebBrowser(url, new RequestContext());                    
+
+                AddHandlers();
+
+                this.Controls.Add(chromeBrowser);
+                chromeBrowser.Dock = DockStyle.Fill;
+            }
+            else
+            { 
+                chromeBrowser.Load(url);                
             }
 
-            public void InitializeChromium()
-            {
-                // Try-Catch prevent two time or more calls in a not nice way
-                try
-                {
-                    CefSettings settings = new CefSettings();                    
-                    Cef.Initialize(settings);
-                }
-                catch (System.Exception)
-                {
-                }                
-            }
+        }
 
-            public void Navigate(string url)
-            {
-                if (chromeBrowser == null)
-                {
-                    chromeBrowser = new ChromiumWebBrowser(url, new RequestContext());                    
-
-                    AddHandlers();
-
-                    this.Controls.Add(chromeBrowser);
-                    chromeBrowser.Dock = DockStyle.Fill;
-                }
-                else
-                { 
-                    chromeBrowser.Load(url);                
-                }
-
-            }
-
-            private void AddHandlers()
+        private void AddHandlers()
+        {
+            //Wait for the MainFrame to finish loading
+            chromeBrowser.FrameLoadEnd += (sender, args) =>
             {
                 //Wait for the MainFrame to finish loading
-                chromeBrowser.FrameLoadEnd += (sender2, args) =>
+                if (args.Frame.IsMain)
+                {                       
+                   FrameLoadEndEvent();
+                }
+            };
+
+            //Wait for the page to finish loading (all resources will have been loaded, rendering is likely still happening)
+            chromeBrowser.LoadingStateChanged += (sender, args) =>
+            {
+                //Wait for the Page to finish loading
+                if (args.IsLoading == false)
                 {
-                    //Wait for the MainFrame to finish loading
-                    if (args.Frame.IsMain)
-                    {                       
-                       FrameLoadEndEvent();
-                    }
-                };
+                    this.chromeBrowser.SetZoomLevel(ZoomCalculator.PercentageToZoomLevel(this._initialZoomPercentage));
+                    LoadingStateChangedEvent();
+                }
+            };
 
-                //Wait for the page to finish loading (all resources will have been loaded, rendering is likely still happening)
-                chromeBrowser.LoadingStateChanged += (sender, args) =>
-                {
-                    //Wait for the Page to finish loading
-                    if (args.IsLoading == false)
-                    {
-                        this.chromeBrowser.SetZoomLevel(ZoomCalculator.PercentageToZoomLevel(this._initialZoomPercentage));
-                        LoadingStateChangedEvent();
-                    }
-                };
+            chromeBrowser.JavascriptMessageReceived += (sender, args) =>
+            {
+                var message = (string)args.Message;
+                JavascriptMessageReceivedEvent(message);
+            };
 
-                chromeBrowser.JavascriptMessageReceived += (sender2, args) =>
-                {
-                    var message = (string)args.Message;
-                    JavascriptMessageReceivedEvent(message);
-                };
+            chromeBrowser.IsBrowserInitializedChanged += (sender, e) =>
+            {
+                if(chromeBrowser.IsBrowserInitialized)
+                    BrowserInitializedEvent();
+            };
 
-                chromeBrowser.IsBrowserInitializedChanged += (sender, e) =>
-                {
-                    if(chromeBrowser.IsBrowserInitialized)
-                        BrowserInitializedEvent();
-                };
+            chromeBrowser.AddressChanged += (sender, args) =>
+            {
+                AddressChangedEvent(args.Address);
+                if (this.addressChangedSpecificKeywords.Where(x => args.Address.Contains(x)).Any())
+                    AddressChangedWithSpecificKeywordEvent(args.Address);
+            };
 
 
 
-                chromeBrowser.DownloadHandler = new DownloadHandler();
-            }
+            chromeBrowser.DownloadHandler = new DownloadHandler();
+        }
        
 
         public void ExecuteScript(string script)
@@ -433,7 +458,10 @@ namespace CefInteropControl
                     
                 }
             }
-            
 
+        public void AddSpecificKeywordForAddressChangedEvent(string keyword)
+        {
+            this.addressChangedSpecificKeywords.Add(keyword);
+        }
     }
 }
