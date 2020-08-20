@@ -1,9 +1,5 @@
 namespace CefInteropControl
 {
-    using CefInteropControl.Handlers;
-    using CefInteropControl.Helpers;
-    using CefSharp;
-    using CefSharp.WinForms;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -11,8 +7,11 @@ namespace CefInteropControl
     using System.Linq;
     using System.Runtime.InteropServices;
     using System.Security.Permissions;
-    using System.Threading.Tasks;
     using System.Windows.Forms;
+    using CefInteropControl.Handlers;
+    using CefInteropControl.Helpers;
+    using CefSharp;
+    using CefSharp.WinForms;
 
     #region Interfaces
 
@@ -172,7 +171,7 @@ namespace CefInteropControl
         public delegate void BrowserInitializedEventHandler();
         public delegate void AddressChangedEventHandler(string address);
         public delegate void AddressChangedWithSpecificKeywordHandler(string address);
-        
+
 
         public event FrameLoadEndEventHandler FrameLoadEndEvent;
         public event LoadingStateChangedEventHandler LoadingStateChangedEvent;
@@ -216,7 +215,7 @@ namespace CefInteropControl
 
         public int ForegroundColor
         {
-            get 
+            get
             {
                 return ActiveXControlHelpers.GetOleColorFromColor(base.ForeColor);
             }
@@ -231,7 +230,7 @@ namespace CefInteropControl
             get
             {
                 return ActiveXControlHelpers.GetOleColorFromColor(base.BackColor);
-                }
+            }
             set
             {
                 base.BackColor = ActiveXControlHelpers.GetColorFromOleColor(value);
@@ -240,10 +239,10 @@ namespace CefInteropControl
 
         public override Image BackgroundImage
         {
-            get{return null;}
+            get { return null; }
             set
             {
-                if(null != value)
+                if (null != value)
                 {
                     MessageBox.Show("Setting the background image of an Interop UserControl is not supported, please use a PictureBox instead.", "Information");
                 }
@@ -260,89 +259,89 @@ namespace CefInteropControl
 
         // Ensures that tabbing across VB6 and .NET controls works as expected
         private void InteropUserControl_LostFocus(object sender, System.EventArgs e)
+        {
+            ActiveXControlHelpers.HandleFocus(this);
+        }
+
+        public CefUserControl()
+        {
+            // This call is required by the Windows Form Designer.
+            InitializeComponent();
+
+            // Add any initialization after the InitializeComponent() call.
+            this.DoubleClick += (this.InteropUserControl_DblClick);
+            base.Click += (this.InteropUserControl_Click);
+            this.LostFocus += (InteropUserControl_LostFocus);
+            this.ControlAdded += (InteropUserControl_ControlAdded);
+
+            // Raise custom Load event
+            this.OnCreateControl();
+        }
+
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+        protected override void WndProc(ref Message m)
+        {
+
+            const int WM_SETFOCUS = 0x7;
+            const int WM_PARENTNOTIFY = 0x210;
+            const int WM_DESTROY = 0x2;
+            const int WM_LBUTTONDOWN = 0x201;
+            const int WM_RBUTTONDOWN = 0x204;
+
+            if (m.Msg == WM_SETFOCUS)
             {
-                ActiveXControlHelpers.HandleFocus(this);
+                // Raise Enter event
+                this.OnEnter(System.EventArgs.Empty);
             }
-
-            public CefUserControl()
-            {
-                // This call is required by the Windows Form Designer.
-                InitializeComponent();
-
-                // Add any initialization after the InitializeComponent() call.
-                this.DoubleClick += (this.InteropUserControl_DblClick);
-                base.Click += (this.InteropUserControl_Click);
-                this.LostFocus += (InteropUserControl_LostFocus); 
-                this.ControlAdded += (InteropUserControl_ControlAdded);
-                
-                // Raise custom Load event
-                this.OnCreateControl();
-            }
-
-            [SecurityPermission(SecurityAction.LinkDemand, Flags =SecurityPermissionFlag.UnmanagedCode)]
-            protected override void WndProc(ref Message m)
+            else if (m.Msg == WM_PARENTNOTIFY && (m.WParam.ToInt32() == WM_LBUTTONDOWN || m.WParam.ToInt32() == WM_RBUTTONDOWN))
             {
 
-                const int WM_SETFOCUS = 0x7;
-                const int WM_PARENTNOTIFY = 0x210;
-                const int WM_DESTROY = 0x2;
-                const int WM_LBUTTONDOWN = 0x201;
-                const int WM_RBUTTONDOWN = 0x204;
-
-                if (m.Msg == WM_SETFOCUS)
+                if (!this.ContainsFocus)
                 {
                     // Raise Enter event
                     this.OnEnter(System.EventArgs.Empty);
                 }
-                else if( m.Msg == WM_PARENTNOTIFY && (m.WParam.ToInt32() == WM_LBUTTONDOWN || m.WParam.ToInt32() == WM_RBUTTONDOWN))
-                {
-
-                    if (!this.ContainsFocus)
-                    {
-                        // Raise Enter event
-                        this.OnEnter(System.EventArgs.Empty);
-                    }
-                }
-                else if (m.Msg == WM_DESTROY && !this.IsDisposed && !this.Disposing)
-                {
-                    // Used to ensure that VB6 will cleanup control properly
-                    this.Dispose();
-                }
-
-                base.WndProc(ref m);
             }
-
-
-
-            // This event will hook up the necessary handlers
-            private void InteropUserControl_ControlAdded(object sender, ControlEventArgs e)
+            else if (m.Msg == WM_DESTROY && !this.IsDisposed && !this.Disposing)
             {
-                ActiveXControlHelpers.WireUpHandlers(e.Control, ValidationHandler);
+                // Used to ensure that VB6 will cleanup control properly
+                this.Dispose();
             }
 
-            // Ensures that the Validating and Validated events fire appropriately
-            internal void ValidationHandler(object sender, System.EventArgs e)
+            base.WndProc(ref m);
+        }
+
+
+
+        // This event will hook up the necessary handlers
+        private void InteropUserControl_ControlAdded(object sender, ControlEventArgs e)
+        {
+            ActiveXControlHelpers.WireUpHandlers(e.Control, ValidationHandler);
+        }
+
+        // Ensures that the Validating and Validated events fire appropriately
+        internal void ValidationHandler(object sender, System.EventArgs e)
+        {
+            if (this.ContainsFocus) return;
+
+            // Raise Leave event
+            this.OnLeave(e);
+
+            if (this.CausesValidation)
             {
-                if( this.ContainsFocus) return;
+                CancelEventArgs validationArgs = new CancelEventArgs();
+                this.OnValidating(validationArgs);
 
-                // Raise Leave event
-                this.OnLeave(e);
-
-                if (this.CausesValidation)
+                if (validationArgs.Cancel && this.ActiveControl != null)
+                    this.ActiveControl.Focus();
+                else
                 {
-                    CancelEventArgs validationArgs = new CancelEventArgs();
-                    this.OnValidating(validationArgs);
-
-                    if(validationArgs.Cancel && this.ActiveControl != null)
-                        this.ActiveControl.Focus();
-                    else
-                    {
-                        // Raise Validated event
-                        this.OnValidated(e);
-                    }
+                    // Raise Validated event
+                    this.OnValidated(e);
                 }
-
             }
+
+        }
 
         #endregion           
 
@@ -353,7 +352,7 @@ namespace CefInteropControl
         // Please enter any new code here, below the Interop code
         private ChromiumWebBrowser chromeBrowser;
         private List<string> addressChangedSpecificKeywords;
-        
+
 
         private void CefUserControl_Load(object sender, System.EventArgs e)
         {
@@ -366,19 +365,19 @@ namespace CefInteropControl
             // Try-Catch prevent two time or more calls in a not nice way
             try
             {
-                CefSettings settings = new CefSettings();                    
+                CefSettings settings = new CefSettings();
                 Cef.Initialize(settings);
             }
             catch (System.Exception)
             {
-            }                
+            }
         }
 
         public void Navigate(string url)
         {
             if (chromeBrowser == null)
             {
-                chromeBrowser = new ChromiumWebBrowser(url, new RequestContext());                    
+                chromeBrowser = new ChromiumWebBrowser(url, new RequestContext());
 
                 AddHandlers();
 
@@ -386,8 +385,8 @@ namespace CefInteropControl
                 chromeBrowser.Dock = DockStyle.Fill;
             }
             else
-            { 
-                chromeBrowser.Load(url);                
+            {
+                chromeBrowser.Load(url);
             }
 
         }
@@ -395,69 +394,70 @@ namespace CefInteropControl
         private void AddHandlers()
         {
             //Wait for the MainFrame to finish loading
-            chromeBrowser.FrameLoadEnd += (sender, args) =>
-            {
-                //Wait for the MainFrame to finish loading
-                if (args.Frame.IsMain)
-                {                       
-                   FrameLoadEndEvent();
-                }
-            };
-
+            chromeBrowser.FrameLoadEnd += FrameLoadEventHandler;
             //Wait for the page to finish loading (all resources will have been loaded, rendering is likely still happening)
-            chromeBrowser.LoadingStateChanged += (sender, args) =>
-            {
-                //Wait for the Page to finish loading
-                if (args.IsLoading == false)
-                {
-                    this.chromeBrowser.SetZoomLevel(ZoomCalculator.PercentageToZoomLevel(this._initialZoomPercentage));
-                    LoadingStateChangedEvent();
-                }
-            };
-
-            chromeBrowser.JavascriptMessageReceived += (sender, args) =>
-            {
-                var message = (string)args.Message;
-                JavascriptMessageReceivedEvent(message);
-            };
-
-            chromeBrowser.IsBrowserInitializedChanged += (sender, e) =>
-            {
-                if(chromeBrowser.IsBrowserInitialized)
-                    BrowserInitializedEvent();
-            };
-
-            chromeBrowser.AddressChanged += (sender, args) =>
-            {
-                AddressChangedEvent(args.Address);
-                if (this.addressChangedSpecificKeywords.Where(x => args.Address.Contains(x)).Any())
-                    AddressChangedWithSpecificKeywordEvent(args.Address);
-            };
-
-
-
+            chromeBrowser.LoadingStateChanged += LoadingStateChangedHandler;
+            chromeBrowser.JavascriptMessageReceived += JavascriptMessageReceivedHandler;
+            chromeBrowser.IsBrowserInitializedChanged += IsBrowserInitializedChangedHandler;
+            chromeBrowser.AddressChanged += AddressChangedHandler;
+            
             chromeBrowser.DownloadHandler = new DownloadHandler();
         }
-       
+
+        private void AddressChangedHandler(object sender, AddressChangedEventArgs e)
+        {
+            AddressChangedEvent(e.Address);
+            if (this.addressChangedSpecificKeywords.Where(x => e.Address.Contains(x)).Any())
+                AddressChangedWithSpecificKeywordEvent(e.Address);
+        }
+
+        private void IsBrowserInitializedChangedHandler(object sender, EventArgs e)
+        {
+            if (chromeBrowser.IsBrowserInitialized)
+                BrowserInitializedEvent();
+        }
+
+        private void JavascriptMessageReceivedHandler(object sender, JavascriptMessageReceivedEventArgs e)
+        {
+            var message = (string)e.Message;
+            JavascriptMessageReceivedEvent(message);
+        }
+
+        private void LoadingStateChangedHandler(object sender, LoadingStateChangedEventArgs e)
+        {
+            //Wait for the Page to finish loading
+            if (e.IsLoading == false)
+            {
+                this.chromeBrowser.SetZoomLevel(ZoomCalculator.PercentageToZoomLevel(this._initialZoomPercentage));
+                LoadingStateChangedEvent();
+            }
+        }
+
+        private void FrameLoadEventHandler(object sender, FrameLoadEndEventArgs e)
+        {
+            //Wait for the MainFrame to finish loading
+            if (e.Frame.IsMain)
+                FrameLoadEndEvent();
+        }
 
         public void ExecuteScript(string script)
-            {
-                // Javascript must have CefSharp.PostMessage(string message); to fire JavascriptMessageReceivedCallback
-                // You can bind any Javascript event to fire the callback is needed
-                chromeBrowser.EvaluateScriptAsync(script);
-            }
+        {
+            // Javascript must have CefSharp.PostMessage(string message); to fire JavascriptMessageReceivedCallback
+            // You can bind any Javascript event to fire the callback is needed
+            chromeBrowser.EvaluateScriptAsync(script);
+        }
 
-            public void DisposeBrowser()
+        public void DisposeBrowser()
+        {
+            try
             {
-                try
-                {
-                    chromeBrowser.Dispose();
-                }
-                catch (System.Exception)
-                {
-                    
-                }
+                chromeBrowser.Dispose();
             }
+            catch (System.Exception)
+            {
+
+            }
+        }
 
         public void AddSpecificKeywordForAddressChangedEvent(string keyword)
         {
