@@ -2,14 +2,14 @@
 
 Interop user control to integrate Chromium Embedded Frame (CefSharp) into VB6 application.
 
-# Pre-requisites
+## Pre-requisites
 
 1. .NET Framework 4.5.2
 2. Visual Studio 2013
 3. [Microsoft InteropForms Toolkit](https://www.microsoft.com/en-us/download/details.aspx?id=3264)
 4. [InteropToolkitCs](https://github.com/froque/interoptoolkitcs) para C#:  que nos brinda un conjunto de interfaces a través de un template de Visual Studio para desarrollar sin mayores complicaciones un componente Interop
 
-# Description of needed
+## Description of needed
 
 The original idea was make an integration of html functionality in a third-party application designed in VB6. The IE6 components is obsolete and the needed is obvious. To perform this task the project use the Microsoft interop Toolkit to build and register de dll in Windows. This is posible by creating the user control through  the InteropToolkitCs that provides a complete interop template. 
 
@@ -22,7 +22,26 @@ List of steps to achievLo que se plantea entonces es lo siguiente:
 5. Build the project to compile de control and register it.
 6. Make some vb6 Demo Project.
 
-# Some considerations
+## CefSharp Parameters settings
+
+In order to set some settings before the Cef Initialization, exist CefParameters.json. It will be copied to the assembly directory.
+
+Example:
+
+```json
+{
+	"locale": "es-AR",
+	"commandLineParameters": [ "disable-extensions", "disable-pdf-extension", "renderer-process-limit:1"]
+}
+```
+
+Some extra docs for settings and command line parameters:
+
+[CefExample.cs](https://github.com/cefsharp/CefSharp/blob/master/CefSharp.Example/CefExample.cs)
+[CefSettings and Browsersettings](https://github.com/cefsharp/CefSharp/wiki/General-Usage#cefsettings-and-browsersettings)
+
+
+## Some considerations
 
 ### InteropToolkitcs
 
@@ -43,11 +62,11 @@ Using CefSharp has some important notes, considerations and limitations: [Cefsha
 
 From [interoptoolkitcs wiki](https://github.com/froque/interoptoolkitcs/wiki/How-To:-Debug-a-Hybrid-Application):
 
-> # Debugging Visual Basic 6.0 Code
+> #### Debugging Visual Basic 6.0 Code
 >
 > Debugging Visual Basic 6.0 code in a Hybrid application is no different than debugging any other Visual Basic 6.0 project. Press F5 to run, set breakpoints, and debug as you normally would. There are two different methods for stepping into your .NET — by attaching to a process from Visual Studio .NET, or by setting a Start Action in Visual Studio.
 >
-> # Debugging with Attach to Process
+> #### Debugging with Attach to Process
 >
 > You will not be able to step into .NET code, however, without performing a few additional steps. Follow these steps to debug your .NET code:
 >

@@ -1,0 +1,4 @@
+{
+	"locale": "es-AR",
+	"commandLineParameters": [ "disable-extensions", "disable-pdf-extension", "renderer-process-limit:1"]
+}

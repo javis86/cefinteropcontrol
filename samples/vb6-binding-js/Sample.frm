@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{34E74120-6D1A-4E42-A3DB-DD24B676A5DF}#1.0#0"; "mscoree.dll"
+Object = "{34E74120-6D1A-4E42-A3DB-DD24B676A5DF}#1.0#0"; "CefInteropControl.tlb"
 Begin VB.Form Form1 
    Caption         =   "vb6 binding js"
    ClientHeight    =   8076
@@ -11,10 +11,10 @@ Begin VB.Form Form1
    ScaleWidth      =   12456
    StartUpPosition =   3  'Windows Default
    Begin CefInteropControlCtl.CefUserControl CefUserControl1 
-      Height          =   7572
+      Height          =   6852
       Left            =   360
       TabIndex        =   0
-      Top             =   240
+      Top             =   960
       Width           =   7212
       Object.Visible         =   "True"
       Enabled         =   "True"
@@ -23,11 +23,27 @@ Begin VB.Form Form1
       InitialZoomPercentage=   "100"
       BackColor       =   "Control"
       ForeColor       =   "ControlText"
-      Location        =   "30, 20"
+      Location        =   "30, 80"
       Margin          =   "4, 4, 4, 4"
       Name            =   "CefUserControl"
-      Size            =   "601, 631"
+      Size            =   "601, 571"
       Object.TabIndex        =   "0"
+   End
+   Begin VB.CommandButton btnNavigate 
+      Caption         =   "Navigate"
+      Height          =   372
+      Left            =   6120
+      TabIndex        =   6
+      Top             =   240
+      Width           =   972
+   End
+   Begin VB.TextBox TxtUrl 
+      Height          =   408
+      Left            =   240
+      TabIndex        =   5
+      Text            =   "https://cefsharp.github.io/"
+      Top             =   240
+      Width           =   5772
    End
    Begin VB.TextBox txtEventLog 
       Enabled         =   0   'False
@@ -67,6 +83,10 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+Private Sub btnNavigate_Click()
+    Me.CefUserControl1.Navigate (TxtUrl.text)
+End Sub
+
 Private Sub CefUserControl1_AddressChangedEvent(ByVal address As String)
     Rem MsgBox ("Address changed" & address)
     LogEvent "AddressChangedEvent", address
@@ -91,7 +111,7 @@ Private Sub CefUserControl1_LoadingStateChangedEvent()
 End Sub
 
 Private Sub Form_Load()
-    Me.CefUserControl1.Navigate ("https://cefsharp.github.io/")
+    Me.CefUserControl1.Navigate (TxtUrl.text)
 End Sub
 
 Private Sub LogEvent(event1 As String, text As String)
@@ -101,6 +121,4 @@ Private Sub LogEvent(event1 As String, text As String)
         Me.txtEventLog.text = event1 & " -> " & text & vbCrLf & Me.txtEventLog.text
     End If
 End Sub
-
-
 

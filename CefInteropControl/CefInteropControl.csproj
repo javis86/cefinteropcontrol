@@ -86,6 +86,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -109,6 +112,7 @@
       <DependentUpon>CefUserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Handlers\DownloadHandler.cs" />
+    <Compile Include="Helpers\CefInteropParameters.cs" />
     <Compile Include="Helpers\ZoomCalculator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
@@ -120,6 +124,10 @@
     <Content Include="CefUserControl.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="CefParameters.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="CefParameters.sample.json" />
     <None Include="CefUserControl.manifest" />
     <None Include="CefUserControl.res" />
     <None Include="packages.config" />

@@ -4,6 +4,7 @@ namespace CefInteropControl
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing;
+    using System.IO;
     using System.Linq;
     using System.Runtime.InteropServices;
     using System.Security.Permissions;
@@ -12,6 +13,7 @@ namespace CefInteropControl
     using CefInteropControl.Helpers;
     using CefSharp;
     using CefSharp.WinForms;
+    using Newtonsoft.Json;
 
     #region Interfaces
 
@@ -362,15 +364,45 @@ namespace CefInteropControl
 
         public void InitializeChromium()
         {
-            // Try-Catch prevent two time or more calls in a not nice way
             try
             {
-                CefSettings settings = new CefSettings();
+                if (Cef.IsInitialized)
+                    return;
+                CefSettings settings = LoadSettings();
                 Cef.Initialize(settings);
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
+                Console.WriteLine(ex.Message);
             }
+        }
+
+        private static CefSettings LoadSettings()
+        {
+            var location = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            var path = Path.Combine(location, "CefParameters.json");
+
+            CefInteropParameters cefParameters = JsonConvert.DeserializeObject<CefInteropParameters>(File.ReadAllText(path));
+
+            CefSettings settings = new CefSettings()
+            {
+                Locale = cefParameters.Locale
+            };
+
+            if (cefParameters.CommandLineParameters != null)
+            {
+                foreach (var item in cefParameters.CommandLineParameters)
+                {
+                    string[] splittedByKeyValue = item.Split(':');
+
+                    if(splittedByKeyValue.Length == 1)
+                        settings.CefCommandLineArgs.Add(item);
+                    else if(splittedByKeyValue.Length == 2)
+                        settings.CefCommandLineArgs.Add(splittedByKeyValue[0], splittedByKeyValue[1]);
+                }
+            }
+
+            return settings;
         }
 
         public void Navigate(string url)
