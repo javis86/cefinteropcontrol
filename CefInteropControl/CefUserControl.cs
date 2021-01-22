@@ -96,25 +96,28 @@ namespace CefInteropControl
 
         [DispId(6)]
         int InitialZoomPercentage { get; set; }
+        
+        [DispId(7)]
+        bool ShowLoadingControl { get; set; }
 
         /// <summary>
         /// Forces the control to invalidate its client area and immediately redraw 
         /// itself and any child controls.
         /// </summary>
-        [DispId(7)]
+        [DispId(8)]
         void Refresh();
 
         // add additional properties and methods visible in VB6
-        [DispId(8)]
+        [DispId(9)]
         void Navigate(string url);
 
-        [DispId(9)]
+        [DispId(10)]
         void DisposeBrowser();
 
-        [DispId(10)]
+        [DispId(11)]
         void ExecuteScript(string script);
 
-        [DispId(11)]
+        [DispId(12)]
         void AddSpecificKeywordForAddressChangedEvent(string keyword);
     }
     #endregion
@@ -255,6 +258,9 @@ namespace CefInteropControl
         private int _initialZoomPercentage = 100;
         public int InitialZoomPercentage { get => this._initialZoomPercentage; set => this._initialZoomPercentage = value; }
 
+        private bool _showLoadingControl = true;
+        public bool ShowLoadingControl { get => this._showLoadingControl; set => this._showLoadingControl = value; }
+
         #endregion
 
         #region "VB6 Methods"
@@ -358,8 +364,9 @@ namespace CefInteropControl
 
         private void CefUserControl_Load(object sender, System.EventArgs e)
         {
-            InitializeChromium();
             addressChangedSpecificKeywords = new List<string>();
+            loadingControl1.Visible = false;
+            InitializeChromium();
         }
 
         public void InitializeChromium()
@@ -368,8 +375,10 @@ namespace CefInteropControl
             {
                 if (Cef.IsInitialized)
                     return;
-                CefSettings settings = LoadSettings();
+                CefSettings settings = LoadSettings();                
                 Cef.Initialize(settings);
+
+                loadingControl1.SetLocale(settings.Locale);
             }
             catch (System.Exception ex)
             {
@@ -432,7 +441,7 @@ namespace CefInteropControl
             chromeBrowser.JavascriptMessageReceived += JavascriptMessageReceivedHandler;
             chromeBrowser.IsBrowserInitializedChanged += IsBrowserInitializedChangedHandler;
             chromeBrowser.AddressChanged += AddressChangedHandler;
-            
+
             chromeBrowser.DownloadHandler = new DownloadHandler();
         }
 
@@ -461,8 +470,14 @@ namespace CefInteropControl
             if (e.IsLoading == false)
             {
                 this.chromeBrowser.SetZoomLevel(ZoomCalculator.PercentageToZoomLevel(this._initialZoomPercentage));
+                this.Invoke(new MethodInvoker(HideLoading));
                 LoadingStateChangedEvent();
             }
+            else
+            {
+                this.Invoke(new MethodInvoker(ShowLoading));
+            }
+
         }
 
         private void FrameLoadEventHandler(object sender, FrameLoadEndEventArgs e)
@@ -495,5 +510,15 @@ namespace CefInteropControl
         {
             this.addressChangedSpecificKeywords.Add(keyword);
         }
+
+        private void HideLoading()
+        {
+            this.loadingControl1.Visible = false;
+        }
+
+        private void ShowLoading()
+        {
+            this.loadingControl1.Visible = this._showLoadingControl;
+        }
     }
-}
+} 

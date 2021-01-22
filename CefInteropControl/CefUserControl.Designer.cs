@@ -28,13 +28,25 @@ namespace CefInteropControl
         /// </summary>
         private void InitializeComponent()
         {
+            this.loadingControl1 = new CefInteropControl.LoadingControl();
             this.SuspendLayout();
+            // 
+            // loadingControl1
+            // 
+            this.loadingControl1.BackColor = System.Drawing.Color.White;
+            this.loadingControl1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.loadingControl1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.loadingControl1.Location = new System.Drawing.Point(0, 156);
+            this.loadingControl1.Name = "loadingControl1";
+            this.loadingControl1.Size = new System.Drawing.Size(200, 29);
+            this.loadingControl1.TabIndex = 0;
             // 
             // CefUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Controls.Add(this.loadingControl1);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "CefUserControl";
             this.Size = new System.Drawing.Size(200, 185);
             this.Load += new System.EventHandler(this.CefUserControl_Load);
@@ -44,6 +56,7 @@ namespace CefInteropControl
 
         #endregion
 
+        private LoadingControl loadingControl1;
     }
 }
 

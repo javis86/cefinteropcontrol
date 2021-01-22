@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{34E74120-6D1A-4E42-A3DB-DD24B676A5DF}#1.0#0"; "CefInteropControl.tlb"
+Object = "{34E74120-6D1A-4E42-A3DB-DD24B676A5DF}#1.0#0"; "mscoree.dll"
 Begin VB.Form Form1 
    Caption         =   "vb6 binding js"
    ClientHeight    =   8076
@@ -21,6 +21,7 @@ Begin VB.Form Form1
       ForegroundColor =   "-2147483630"
       BackgroundColor =   "-2147483633"
       InitialZoomPercentage=   "100"
+      ShowLoadingControl=   "True"
       BackColor       =   "Control"
       ForeColor       =   "ControlText"
       Location        =   "30, 80"

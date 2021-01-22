@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CefInteropControl", "CefInteropControl\CefInteropControl.csproj", "{B9C8F7B7-4C5C-4303-B33A-322D704A919A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MRG.Controls.UI", "MRG.Controls.UI\MRG.Controls.UI.csproj", "{48E18B56-4C37-4D69-ABA7-429C42B45AAC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,18 @@ Global
 		{B9C8F7B7-4C5C-4303-B33A-322D704A919A}.Release|x64.Build.0 = Release|x64
 		{B9C8F7B7-4C5C-4303-B33A-322D704A919A}.Release|x86.ActiveCfg = Release|x86
 		{B9C8F7B7-4C5C-4303-B33A-322D704A919A}.Release|x86.Build.0 = Release|x86
+		{48E18B56-4C37-4D69-ABA7-429C42B45AAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48E18B56-4C37-4D69-ABA7-429C42B45AAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48E18B56-4C37-4D69-ABA7-429C42B45AAC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{48E18B56-4C37-4D69-ABA7-429C42B45AAC}.Debug|x64.Build.0 = Debug|Any CPU
+		{48E18B56-4C37-4D69-ABA7-429C42B45AAC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{48E18B56-4C37-4D69-ABA7-429C42B45AAC}.Debug|x86.Build.0 = Debug|Any CPU
+		{48E18B56-4C37-4D69-ABA7-429C42B45AAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48E18B56-4C37-4D69-ABA7-429C42B45AAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48E18B56-4C37-4D69-ABA7-429C42B45AAC}.Release|x64.ActiveCfg = Release|Any CPU
+		{48E18B56-4C37-4D69-ABA7-429C42B45AAC}.Release|x64.Build.0 = Release|Any CPU
+		{48E18B56-4C37-4D69-ABA7-429C42B45AAC}.Release|x86.ActiveCfg = Release|Any CPU
+		{48E18B56-4C37-4D69-ABA7-429C42B45AAC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
