@@ -84,7 +84,7 @@ namespace CefInteropControl
                         // you can modify this section to specify a different icon each time.
                         // Each specified icon must be embedded as a win32resource in the
                         // assembly; the default one is at index 101, but you can add additional ones.
-                        bitmapKey.SetValue("", Assembly.GetExecutingAssembly().Location + ", 101",
+                        bitmapKey.SetValue("", Assembly.GetExecutingAssembly().Location + ", 104",
                                            RegistryValueKind.String);
                     }
 

@@ -1,10 +1,11 @@
 Type=Exe
 Form=Sample.frm
 Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#..\..\..\..\..\..\..\Windows\SysWOW64\stdole2.tlb#OLE Automation
-Object={34E74120-6D1A-4E42-A3DB-DD24B676A5DF}#1.0#0; mscoree.dll
+Object={34E74120-6D1A-4E42-A3DB-DD24B676A5D5}#1.1#0; CefInteropControl1.1.tlb
+Object={34E74120-6D1A-4E42-A3DB-DD24B676A5DF}#1.0#0; CefInteropControl.tlb
 IconForm="Form1"
 Startup="Form1"
-ExeName32="demo-cef.exe"
+ExeName32="demo-cef1.1.exe"
 Path32="..\..\..\..\..\Desktop"
 Command32=""
 Name="Proyecto1"

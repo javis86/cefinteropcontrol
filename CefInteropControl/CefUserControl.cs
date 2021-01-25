@@ -136,9 +136,9 @@ namespace CefInteropControl
         // and its COM interfaces. If you change them, existing 
         // clients will no longer be able to access the class.
 
-        public const string ClassId = "0df2f426-547c-4c33-9e05-6c446c8bb994";
-        public const string InterfaceId = "d2ab306d-37ad-41ff-b5d5-eb5150244229";
-        public const string EventsId = "e5bd2f05-a854-4211-a41b-598e519dbae8";
+        public const string ClassId = "0df2f426-547c-4c33-9e05-6c446c8bb995";
+        public const string InterfaceId = "d2ab306d-37ad-41ff-b5d5-eb5150244225";
+        public const string EventsId = "e5bd2f05-a854-4211-a41b-598e519dbae5";
 
         // These routines perform the additional COM registration needed by ActiveX controls
         [EditorBrowsable(EditorBrowsableState.Never)]

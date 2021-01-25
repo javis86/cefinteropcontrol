@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{34E74120-6D1A-4E42-A3DB-DD24B676A5DF}#1.0#0"; "mscoree.dll"
+Object = "{34E74120-6D1A-4E42-A3DB-DD24B676A5D5}#1.1#0"; "mscoree.dll"
 Begin VB.Form Form1 
    Caption         =   "vb6 binding js"
    ClientHeight    =   8076
@@ -10,12 +10,12 @@ Begin VB.Form Form1
    ScaleHeight     =   8076
    ScaleWidth      =   12456
    StartUpPosition =   3  'Windows Default
-   Begin CefInteropControlCtl.CefUserControl CefUserControl1 
-      Height          =   6852
+   Begin CefInteropControl1_1Ctl.CefUserControl CefUserControl1 
+      Height          =   6612
       Left            =   360
-      TabIndex        =   0
-      Top             =   960
-      Width           =   7212
+      TabIndex        =   6
+      Top             =   720
+      Width           =   6972
       Object.Visible         =   "True"
       Enabled         =   "True"
       ForegroundColor =   "-2147483630"
@@ -24,24 +24,24 @@ Begin VB.Form Form1
       ShowLoadingControl=   "True"
       BackColor       =   "Control"
       ForeColor       =   "ControlText"
-      Location        =   "30, 80"
+      Location        =   "30, 60"
       Margin          =   "4, 4, 4, 4"
       Name            =   "CefUserControl"
-      Size            =   "601, 571"
+      Size            =   "581, 551"
       Object.TabIndex        =   "0"
    End
    Begin VB.CommandButton btnNavigate 
       Caption         =   "Navigate"
       Height          =   372
       Left            =   6120
-      TabIndex        =   6
+      TabIndex        =   5
       Top             =   240
       Width           =   972
    End
    Begin VB.TextBox TxtUrl 
       Height          =   408
       Left            =   240
-      TabIndex        =   5
+      TabIndex        =   4
       Text            =   "https://cefsharp.github.io/"
       Top             =   240
       Width           =   5772
@@ -51,7 +51,7 @@ Begin VB.Form Form1
       Height          =   3732
       Left            =   7800
       MultiLine       =   -1  'True
-      TabIndex        =   4
+      TabIndex        =   3
       Top             =   4080
       Width           =   4452
    End
@@ -59,7 +59,7 @@ Begin VB.Form Form1
       Caption         =   "Event Log"
       Height          =   252
       Left            =   7800
-      TabIndex        =   3
+      TabIndex        =   2
       Top             =   3720
       Width           =   4332
    End
@@ -67,14 +67,14 @@ Begin VB.Form Form1
       Caption         =   "Selected Text"
       Height          =   252
       Left            =   7680
-      TabIndex        =   2
+      TabIndex        =   1
       Top             =   120
       Width           =   4572
    End
    Begin VB.Label Label1 
       Height          =   2892
       Left            =   7800
-      TabIndex        =   1
+      TabIndex        =   0
       Top             =   480
       Width           =   4332
    End

@@ -7,10 +7,10 @@
   manifestVersion="1.0">
 <assemblyIdentity
             type="win32"
-            name="CefInteropControl"
-            version="1.0.0.0" />
+            name="CefInteropControl1.1"
+            version="1.1.0.0" />
 <clrClass
-            clsid="{0df2f426-547c-4c33-9e05-6c446c8bb994}"
+            clsid="{0df2f426-547c-4c33-9e05-6c446c8bb995}"
             progid="CefInteropControl.CefUserControl"
             threadingModel="Both"
             name="CefInteropControl.CefUserControl" >
