@@ -37,9 +37,10 @@
             this.lblLoading.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblLoading.AutoSize = true;
             this.lblLoading.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F);
-            this.lblLoading.Location = new System.Drawing.Point(43, 5);
+            this.lblLoading.Location = new System.Drawing.Point(29, 5);
+            this.lblLoading.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblLoading.Name = "lblLoading";
-            this.lblLoading.Size = new System.Drawing.Size(61, 15);
+            this.lblLoading.Size = new System.Drawing.Size(54, 13);
             this.lblLoading.TabIndex = 3;
             this.lblLoading.Text = "Loading...";
             // 
@@ -51,26 +52,29 @@
             this.loadingCircle.Color = System.Drawing.Color.CornflowerBlue;
             this.loadingCircle.InnerCircleRadius = 5;
             this.loadingCircle.Location = new System.Drawing.Point(1, 1);
+            this.loadingCircle.Margin = new System.Windows.Forms.Padding(2);
             this.loadingCircle.Name = "loadingCircle";
-            this.loadingCircle.NumberSpoke = 12;
-            this.loadingCircle.OuterCircleRadius = 11;
+            this.loadingCircle.NumberSpoke = 10;
+            this.loadingCircle.OuterCircleRadius = 8;
             this.loadingCircle.RotationSpeed = 100;
-            this.loadingCircle.Size = new System.Drawing.Size(36, 29);
+            this.loadingCircle.Size = new System.Drawing.Size(27, 24);
             this.loadingCircle.SpokeThickness = 2;
             this.loadingCircle.StylePreset = MRG.Controls.UI.LoadingCircle.StylePresets.MacOSX;
             this.loadingCircle.TabIndex = 2;
             this.loadingCircle.Text = "loadingCircle1";
+            this.loadingCircle.Click += new System.EventHandler(this.loadingCircle_Click);
             // 
             // LoadingControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this.lblLoading);
             this.Controls.Add(this.loadingCircle);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "LoadingControl";
-            this.Size = new System.Drawing.Size(248, 29);
+            this.Size = new System.Drawing.Size(186, 24);
             this.Load += new System.EventHandler(this.LoadingControl_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
