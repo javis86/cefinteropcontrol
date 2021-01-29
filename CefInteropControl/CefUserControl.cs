@@ -365,8 +365,7 @@ namespace CefInteropControl
         private void CefUserControl_Load(object sender, System.EventArgs e)
         {
             addressChangedSpecificKeywords = new List<string>();
-            loadingControl1.Visible = false;
-            InitializeChromium();
+            loadingControl1.Visible = false;            
         }
 
         public void InitializeChromium()
@@ -416,6 +415,8 @@ namespace CefInteropControl
 
         public void Navigate(string url)
         {
+            InitializeChromium();
+
             if (chromeBrowser == null)
             {
                 chromeBrowser = new ChromiumWebBrowser(url, new RequestContext());
